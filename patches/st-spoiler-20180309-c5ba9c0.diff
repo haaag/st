@@ -3,7 +3,7 @@ diff --git a/x.c b/x.c
 +++ b/x.c
 @@ -1330,9 +1330,14 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
  	}
- 
+
  	if (base.mode & ATTR_REVERSE) {
 -		temp = fg;
 -		fg = bg;
@@ -17,5 +17,5 @@ diff --git a/x.c b/x.c
 +			bg = temp;
 +		}
  	}
- 
+
  	if (base.mode & ATTR_BLINK && win.mode & MODE_BLINK)
