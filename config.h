@@ -6,8 +6,13 @@
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
 // static char *font = "Iosevka Term:pixelsize=15:antialias=true:autohint=true";
-static char *font = "JetBrainsMono Nerd Font Mono:pixelsize=14:antialias=true:autohint=true";
-static char *font2[] = { "nonicons:pixelsize=12:antialias=true:autohint=true", "Material:size=12", "Noto Color Emoji:pixelsize=13:antialias=true:autohint=true" };
+static char *font = "JetBrainsMono Nerd Font Mono:pixelsize=15:antialias=true:autohint=true";
+static char *font2[] = { 
+  "nonicons:pixelsize=12:antialias=true:autohint=true",
+  "Material:size=12",
+  "Noto Color Emoji:pixelsize=13:antialias=true:autohint=true",
+  "Symbols Nerd Font:pixelsize=13:antialias=true:autohint=true" 
+};
 
 static int borderpx = 0;
 
@@ -246,8 +251,8 @@ MouseKey mkeys[] = {
   /* button               mask            function        argument */
   { Button4,              XK_NO_MOD,      kscrollup,      {.i =  mousescrollincrement} },
   { Button5,              XK_NO_MOD,      kscrolldown,    {.i =  mousescrollincrement} },
-  { Button4,              Mod4Mask,        zoom,           {.f =  +1} },
-  { Button5,              Mod4Mask,        zoom,           {.f =  -1} },
+  { Button4,              Mod4Mask,        zoom,          {.f =  +1} },
+  { Button5,              Mod4Mask,        zoom,          {.f =  -1} },
 };
 
 static char *openurlcmd[] = { "/bin/sh", "-c", "st-urlhandler -o", "externalpipe", NULL };
