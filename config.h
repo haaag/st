@@ -295,7 +295,7 @@ static Shortcut shortcuts[] = {
   { TERMMOD,              	  XK_D,           zoom,           {.f = -2} },
   { MODKEY,               	  XK_i,           externalpipe,   {.v = openurlcmd } },
   { MODKEY,               	  XK_y,           externalpipe,   {.v = copyurlcmd } },
-  { MODKEY,               	  XK_o,           externalpipe,   {.v = copyoutput } },
+  // { MODKEY,               	  XK_o,           externalpipe,   {.v = copyoutput } },
   { TERMMOD,              	  XK_Return,      newterm,        {.i =  0} },
 
 };
