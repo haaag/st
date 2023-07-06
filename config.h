@@ -6,12 +6,14 @@
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
 // static char *font = "Iosevka Term:pixelsize=15:antialias=true:autohint=true";
-static char *font = "JetBrainsMono Nerd Font Mono:pixelsize=15:antialias=true:autohint=true";
+static char *font = "InputMono Nerd Font:pixelsize=16:antialias=true:autohint=true";
 static char *font2[] = { 
   "nonicons:pixelsize=12:antialias=true:autohint=true",
   "Material:size=12",
   "Noto Color Emoji:pixelsize=13:antialias=true:autohint=true",
-  "Symbols Nerd Font:pixelsize=13:antialias=true:autohint=true" 
+  "Symbols Nerd Font:pixelsize=13:antialias=true:autohint=true",
+  "Weather Icons:size=10",
+  "weathericons:size=10"
 };
 
 static int borderpx = 0;
