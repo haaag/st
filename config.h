@@ -5,7 +5,6 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-// static char *font = "Iosevka Term:pixelsize=15:antialias=true:autohint=true";
 static char *font = "Maple Mono NF:pixelsize=17:antialias=true:autohint=true";
 static char *font2[] = {
   "nonicons:pixelsize=12:antialias=true:autohint=true",
@@ -104,7 +103,6 @@ static int bellvolume = 0;
 
 /* default TERM value */
 char *termname = "st-256color";
-// char *termname = "xterm-256color";
 
 /*
  * spaces per tab
@@ -273,9 +271,9 @@ MouseKey mkeys[] = {
   { Button5,              Mod4Mask,        zoom,          {.f =  -1} },
 };
 
-// static char *openurlcmd[] = { "/bin/sh", "-c", "st-urlhandler -o", "externalpipe", NULL };
-// static char *copyurlcmd[] = { "/bin/sh", "-c", "st-urlhandler -c", "externalpipe", NULL };
-// static char *copyoutput[] = { "/bin/sh", "-c", "st-copyout", "externalpipe", NULL };
+static char *openurlcmd[] = { "/bin/sh", "-c", "st-urlhandler -o", "externalpipe", NULL };
+static char *copyurlcmd[] = { "/bin/sh", "-c", "st-urlhandler -c", "externalpipe", NULL };
+static char *copyoutput[] = { "/bin/sh", "-c", "st-copyout", "externalpipe", NULL };
 
 static Shortcut shortcuts[] = {
     /* mask			                keysym          function        argument */
@@ -289,30 +287,31 @@ static Shortcut shortcuts[] = {
     { ControlMask | ShiftMask,      XK_C,           clipcopy,       {.i =  0} },
     { ShiftMask,			        XK_Insert,      clippaste,      {.i =  0} },
     { ControlMask | ShiftMask,      XK_V,           clippaste,      {.i =  0} },
-    { XK_ANY_MOD,			        Button2,	    selpaste,	      {.i =  0} },
+    { XK_ANY_MOD,			        Button2,	    selpaste,	    {.i =  0} },
     { MODKEY,			            XK_Num_Lock,    numlock,        {.i =  0} },
     { ControlMask | ShiftMask,      XK_U,           iso14755,       {.i =  0} },
     { MODKEY,			            XK_Page_Up,     kscrollup,      {.i = -1} },
     { MODKEY,               	    XK_Page_Down,   kscrolldown,    {.i = -1} },
+    { MODKEY,                       XK_Up,          kscrollup,      {.i =  1} },
+    { MODKEY,                       XK_Down,        kscrolldown,    {.i =  1} },
+    { MODKEY,			            XK_s,           changealpha,	{.f = -0.05} },
+    { MODKEY,               	    XK_a,           changealpha,	{.f = +0.05} },
+    { TERMMOD,              	    XK_K,           zoom,           {.f = +1} },
+    { TERMMOD,              	    XK_J,           zoom,           {.f = -1} },
+    { MODKEY,                       XK_i,           externalpipe,   {.v = copyurlcmd } },
+    { MODKEY,                       XK_u,           externalpipe,   {.v = openurlcmd } },
+    { MODKEY,                       XK_w,           externalpipe,   {.v = copyoutput } },
+    { TERMMOD,              	    XK_Return,      newterm,        {.i =  0} },
+    { MODKEY,                       XK_c,           normalMode,     {.i =  0} },
     //
+    // { MODKEY,                       XK_i,           externalpipe,   {.v = openurlcmd } },
     // { ShiftMask,                    XK_Page_Up,     kscrollup,      {.i = -1} },
     // { ShiftMask,                    XK_Page_Down,   kscrolldown,    {.i = -1} },
-    // { MODKEY,                       XK_Up,          kscrollup,      {.i =  1} },
-    // { MODKEY,                       XK_Down,        kscrolldown,    {.i =  1} },
     // { MODKEY,                       XK_k,           kscrollup,      {.i =  1} },
     // { MODKEY,                       XK_j,           kscrolldown,    {.i =  1} },
     // { MODKEY,                       XK_u,           kscrollup,      {.i = -1} },
     // { MODKEY,                       XK_d,           kscrolldown,    {.i = -1} },
-    // { MODKEY,                       XK_m,		   changealpha,	  {.f = +2.00} },
     //
-    { MODKEY,			            XK_s,           changealpha,	  {.f = -0.05} },
-    { MODKEY,               	    XK_a,           changealpha,	  {.f = +0.05} },
-    { TERMMOD,              	    XK_K,           zoom,           {.f = +1} },
-    { TERMMOD,              	    XK_J,           zoom,           {.f = -1} },
-    { MODKEY,                       XK_i,           copyurl,        {.i =  0} },
-    { TERMMOD,              	    XK_Return,      newterm,        {.i =  0} },
-    { MODKEY,                       XK_c,           normalMode,     {.i =  0} },
-
 };
 
 /*

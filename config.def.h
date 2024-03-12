@@ -5,8 +5,16 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "JetBrainsMono Nerd Font :pixelsize=15:antialias=true:autohint=true";
-static char *font2[] = { "JetBrainsMono Nerd Font :pixelsize=15:antialias=true:autohint=true" };
+static char *font = "Maple Mono NF:pixelsize=17:antialias=true:autohint=true";
+static char *font2[] = {
+  "nonicons:pixelsize=12:antialias=true:autohint=true",
+  "Material:size=12",
+  "Noto Color Emoji:pixelsize=13:antialias=true:autohint=true",
+  "Symbols Nerd Font:pixelsize=13:antialias=true:autohint=true",
+  "Weather Icons:size=10",
+  "weathericons:size=10"
+};
+
 static int borderpx = 0;
 
 /*
@@ -17,7 +25,7 @@ static int borderpx = 0;
  * 4: value of shell in /etc/passwd
  * 5: value of shell in config.h
  */
-static char *shell = "/bin/sh";
+static char *shell = "/bin/zsh";
 char *utmp = NULL;
 char *stty_args = "stty raw pass8 nl -echo -iexten -cstopb 38400";
 
@@ -114,7 +122,7 @@ char *termname = "st-256color";
 unsigned int tabspaces = 8;
 
 /* bg opacity */
-float alpha = 1.0;
+float alpha = 1;
 
 /* Terminal colors (16 first used in escape sequence) */
 static const char *colorname[] = {
@@ -151,6 +159,22 @@ unsigned int defaultfg = 259;
 unsigned int defaultbg = 258;
 unsigned int defaultcs = 256;
 unsigned int defaultrcs = 257;
+
+unsigned int const currentBg = 8, buffSize = 2048;
+/// Enable double / triple click yanking / selection of word / line.
+int const mouseYank = 1, mouseSelect = 0;
+/// [Vim Browse] Colors for search results currently on screen.
+unsigned int const highlightBg = 160, highlightFg = 15;
+char const wDelS[] = "!\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~", wDelL[] = " \t";
+char *nmKeys [] = {              ///< Shortcusts executed in normal mode
+  "R/Building\nN", "r/Building\n", "X/juli@machine\nN", "x/juli@machine\n",
+  "Q?[Leaving vim, starting execution]\n","F/: error:\nN", "f/: error:\n", "DQf"
+};
+unsigned int const amountNmKeys = sizeof(nmKeys) / sizeof(*nmKeys);
+/// Style of the {command, search} string shown in the right corner (y,v,V,/)
+Glyph styleSearch = {' ', ATTR_ITALIC | ATTR_BOLD_FAINT, 7, 16};
+Glyph style[] = {{' ',ATTR_ITALIC|ATTR_FAINT,15,16}, {' ',ATTR_ITALIC,8,11},
+                 {' ', ATTR_ITALIC, 8, 4}, {' ', ATTR_ITALIC, 8, 12}};
 
 /*
  * https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h4-Functions-using-CSI-_-ordered-by-the-final-character-lparen-s-rparen:CSI-Ps-SP-q.1D81
@@ -243,57 +267,51 @@ MouseKey mkeys[] = {
   /* button               mask            function        argument */
   { Button4,              XK_NO_MOD,      kscrollup,      {.i =  mousescrollincrement} },
   { Button5,              XK_NO_MOD,      kscrolldown,    {.i =  mousescrollincrement} },
-  { Button4,              Mod4Mask,        zoom,           {.f =  +1} },
-  { Button5,              Mod4Mask,        zoom,           {.f =  -1} },
+  { Button4,              Mod4Mask,        zoom,          {.f =  +1} },
+  { Button5,              Mod4Mask,        zoom,          {.f =  -1} },
 };
 
-static char *openurlcmd[] = { "/bin/sh", "-c", "st-urlhandler", "externalpipe", NULL };
-
-static char *copyurlcmd[] = { "/bin/sh", "-c",
-  "tmp=$(sed 's/.*│//g' | tr -d '\n' | grep -aEo '(((http|https|gopher|gemini|ftp|ftps|git)://|www\\.)[a-zA-Z0-9.]*[:]?[a-zA-Z0-9./@$&%?$#=_-~]*)|((magnet:\\?xt=urn:btih:)[a-zA-Z0-9]*)' | uniq | sed 's/^www./http:\\/\\/www\\./g' ); IFS=; [ ! -z $tmp ] && echo $tmp | dmenu -i -p 'Copy which url?' -l 10 | tr -d '\n' | xclip -selection clipboard",
-  "externalpipe", NULL };
-
+static char *openurlcmd[] = { "/bin/sh", "-c", "st-urlhandler -o", "externalpipe", NULL };
+static char *copyurlcmd[] = { "/bin/sh", "-c", "st-urlhandler -c", "externalpipe", NULL };
 static char *copyoutput[] = { "/bin/sh", "-c", "st-copyout", "externalpipe", NULL };
 
 static Shortcut shortcuts[] = {
-  /* mask                 keysym          function        argument */
-  { XK_ANY_MOD,           XK_Break,       sendbreak,      {.i =  0} },
-  { ControlMask,          XK_Print,       toggleprinter,  {.i =  0} },
-  { ShiftMask,            XK_Print,       printscreen,    {.i =  0} },
-  { XK_ANY_MOD,           XK_Print,       printsel,       {.i =  0} },
-  { MODKEY,              XK_comma,       zoom,           {.f = +1} },
-  { MODKEY,              XK_period,        zoom,           {.f = -1} },
-  { MODKEY,               XK_g,        zoomreset,      {.f =  0} },
-  { ControlMask | ShiftMask,               XK_C,           clipcopy,       {.i =  0} },
-  { ShiftMask,            XK_Insert,      clippaste,      {.i =  0} },
-  { ControlMask | ShiftMask,               XK_V,           clippaste,      {.i =  0} },
-  { XK_ANY_MOD,		Button2,	selpaste,	{.i =  0} },
-  { MODKEY,               XK_Num_Lock,    numlock,        {.i =  0} },
-  { ControlMask | ShiftMask,               XK_U,           iso14755,       {.i =  0} },
-  { ShiftMask,            XK_Page_Up,     kscrollup,      {.i = -1} },
-  { ShiftMask,            XK_Page_Down,   kscrolldown,    {.i = -1} },
-  { MODKEY,               XK_Page_Up,     kscrollup,      {.i = -1} },
-  { MODKEY,               XK_Page_Down,   kscrolldown,    {.i = -1} },
-  { MODKEY,               XK_k,           kscrollup,      {.i =  1} },
-  { MODKEY,               XK_j,           kscrolldown,    {.i =  1} },
-  { MODKEY,               XK_Up,          kscrollup,      {.i =  1} },
-  { MODKEY,               XK_Down,        kscrolldown,    {.i =  1} },
-  { MODKEY,               XK_u,           kscrollup,      {.i = -1} },
-  { MODKEY,               XK_d,           kscrolldown,    {.i = -1} },
-  { MODKEY,		XK_s,		changealpha,	{.f = -0.05} },
-  { MODKEY,		XK_a,		changealpha,	{.f = +0.05} },
-  { MODKEY,		XK_m,		changealpha,	{.f = +2.00} },
-  { TERMMOD,              XK_Up,          zoom,           {.f = +1} },
-  { TERMMOD,              XK_Down,        zoom,           {.f = -1} },
-  { TERMMOD,              XK_K,           zoom,           {.f = +1} },
-  { TERMMOD,              XK_J,           zoom,           {.f = -1} },
-  { TERMMOD,              XK_U,           zoom,           {.f = +2} },
-  { TERMMOD,              XK_D,           zoom,           {.f = -2} },
-  { MODKEY,               XK_l,           externalpipe,   {.v = openurlcmd } },
-  { MODKEY,               XK_y,           externalpipe,   {.v = copyurlcmd } },
-  { MODKEY,               XK_o,           externalpipe,   {.v = copyoutput } },
-  { TERMMOD,              XK_Return,      newterm,        {.i =  0} },
-
+    /* mask			                keysym          function        argument */
+    { XK_ANY_MOD,           	    XK_Break,       sendbreak,      {.i =  0} },
+    { ControlMask,          	    XK_Print,       toggleprinter,  {.i =  0} },
+    { ShiftMask,            	    XK_Print,       printscreen,    {.i =  0} },
+    { XK_ANY_MOD,           	    XK_Print,       printsel,       {.i =  0} },
+    { MODKEY,               	    XK_equal,       zoom,           {.f = +1} },
+    { MODKEY,               	    XK_minus,       zoom,           {.f = -1} },
+    { MODKEY,               	    XK_BackSpace,   zoomreset,      {.f =  0} },
+    { ControlMask | ShiftMask,      XK_C,           clipcopy,       {.i =  0} },
+    { ShiftMask,			        XK_Insert,      clippaste,      {.i =  0} },
+    { ControlMask | ShiftMask,      XK_V,           clippaste,      {.i =  0} },
+    { XK_ANY_MOD,			        Button2,	    selpaste,	    {.i =  0} },
+    { MODKEY,			            XK_Num_Lock,    numlock,        {.i =  0} },
+    { ControlMask | ShiftMask,      XK_U,           iso14755,       {.i =  0} },
+    { MODKEY,			            XK_Page_Up,     kscrollup,      {.i = -1} },
+    { MODKEY,               	    XK_Page_Down,   kscrolldown,    {.i = -1} },
+    { MODKEY,                       XK_Up,          kscrollup,      {.i =  1} },
+    { MODKEY,                       XK_Down,        kscrolldown,    {.i =  1} },
+    { MODKEY,			            XK_s,           changealpha,	{.f = -0.05} },
+    { MODKEY,               	    XK_a,           changealpha,	{.f = +0.05} },
+    { TERMMOD,              	    XK_K,           zoom,           {.f = +1} },
+    { TERMMOD,              	    XK_J,           zoom,           {.f = -1} },
+    { MODKEY,                       XK_i,           externalpipe,   {.v = copyurlcmd } },
+    { MODKEY,                       XK_u,           externalpipe,   {.v = openurlcmd } },
+    { MODKEY,                       XK_w,           externalpipe,   {.v = copyoutput } },
+    { TERMMOD,              	    XK_Return,      newterm,        {.i =  0} },
+    { MODKEY,                       XK_c,           normalMode,     {.i =  0} },
+    //
+    // { MODKEY,                       XK_i,           externalpipe,   {.v = openurlcmd } },
+    // { ShiftMask,                    XK_Page_Up,     kscrollup,      {.i = -1} },
+    // { ShiftMask,                    XK_Page_Down,   kscrolldown,    {.i = -1} },
+    // { MODKEY,                       XK_k,           kscrollup,      {.i =  1} },
+    // { MODKEY,                       XK_j,           kscrolldown,    {.i =  1} },
+    // { MODKEY,                       XK_u,           kscrollup,      {.i = -1} },
+    // { MODKEY,                       XK_d,           kscrolldown,    {.i = -1} },
+    //
 };
 
 /*
@@ -576,3 +594,27 @@ static char ascii_printable[] =
 " !\"#$%&'()*+,-./0123456789:;<=>?"
 "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
 "`abcdefghijklmnopqrstuvwxyz{|}~";
+
+/**
+ * Undercurl style. Set UNDERCURL_STYLE to one of the available styles.
+ *
+ * Curly: Dunno how to draw it *shrug*
+ *  _   _   _   _
+ * ( ) ( ) ( ) ( )
+ *	 (_) (_) (_) (_)
+ *
+ * Spiky:
+ * /\  /\   /\	/\
+ *   \/  \/	  \/
+ *
+ * Capped:
+ *	_     _     _
+ * / \   / \   / \
+ *    \_/   \_/
+ */
+// Available styles
+#define UNDERCURL_CURLY 0
+#define UNDERCURL_SPIKY 1
+#define UNDERCURL_CAPPED 2
+// Active style
+#define UNDERCURL_STYLE UNDERCURL_SPIKY
