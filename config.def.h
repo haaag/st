@@ -271,8 +271,8 @@ MouseKey mkeys[] = {
   { Button5,              Mod4Mask,        zoom,          {.f =  -1} },
 };
 
-static char *openurlcmd[] = { "/bin/sh", "-c", "go-extract-url -o", "externalpipe", NULL };
-static char *copyurlcmd[] = { "/bin/sh", "-c", "go-extract-url -c", "externalpipe", NULL };
+static char *openurlcmd[] = { "/bin/sh", "-c", "gourl -o -l 1000 -menu-args='-sb #FFF'", "externalpipe", NULL };
+static char *copyurlcmd[] = { "/bin/sh", "-c", "gourl -c -l 1000 ", "externalpipe", NULL };
 static char *copyoutput[] = { "/bin/sh", "-c", "st-copyout", "externalpipe", NULL };
 
 static Shortcut shortcuts[] = {
