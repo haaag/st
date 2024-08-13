@@ -264,11 +264,11 @@ static MouseShortcut mshortcuts[] = {
 #define TERMMOD (Mod4Mask|ShiftMask)
 
 MouseKey mkeys[] = {
-  /* button               mask            function        argument */
-  { Button4,              XK_NO_MOD,      kscrollup,      {.i =  mousescrollincrement} },
-  { Button5,              XK_NO_MOD,      kscrolldown,    {.i =  mousescrollincrement} },
-  { Button4,              Mod4Mask,        zoom,          {.f =  +1} },
-  { Button5,              Mod4Mask,        zoom,          {.f =  -1} },
+  /* button               mask              function        argument */
+  { Button4,              XK_NO_MOD,        kscrollup,      {.i =  mousescrollincrement} },
+  { Button5,              XK_NO_MOD,        kscrolldown,    {.i =  mousescrollincrement} },
+  { Button4,              Mod4Mask,         zoom,           {.f =  +1} },
+  { Button5,              Mod4Mask,         zoom,           {.f =  -1} },
 };
 
 static char *openurlcmd[] = { "/bin/sh", "-c", "gourl -o -l 1000 -menu-args='-sb #FFF'", "externalpipe", NULL };
@@ -299,7 +299,7 @@ static Shortcut shortcuts[] = {
     { TERMMOD,              	    XK_K,           zoom,           {.f = +1} },
     { TERMMOD,              	    XK_J,           zoom,           {.f = -1} },
     { MODKEY,                       XK_i,           externalpipe,   {.v = copyurlcmd } },
-    { MODKEY,                       XK_u,           externalpipe,   {.v = openurlcmd } },
+    { MODKEY | ShiftMask,           XK_I,           externalpipe,   {.v = openurlcmd } },
     { MODKEY,                       XK_w,           externalpipe,   {.v = copyoutput } },
     { TERMMOD,              	    XK_Return,      newterm,        {.i =  0} },
     { MODKEY,                       XK_c,           normalMode,     {.i =  0} },
