@@ -21,7 +21,7 @@ struct NormalModeState {
 DynamicArray searchStr=UTF8_ARRAY, cCmd=UTF8_ARRAY, lCmd=UTF8_ARRAY;
 Glyph styleCmd;
 char posBuffer[10], braces[6][3] = { {"()"}, {"<>"}, {"{}"}, {"[]"}, {"\"\""}, {"''"}};
-int exited=1, overlay=1;
+int exited=1, overlay=0;
 static inline Rune cChar() { return term.line[term.c.y][term.c.x].u; }
 static inline int pos(int p, int h) {return IS_SET(MODE_ALTSCREEN)?p:rangeY(p+h*histOff-insertOff);}
 static inline int contains(Rune l, char const * values, size_t const memSize) {
@@ -67,6 +67,7 @@ static int findString(int s, int all) {
 	markSearchMatches(all);
 	return wIdx == strSz;
 }
+
 /// Execute series of normal-mode commands from char array / decoded from dynamic array
 ExitState pressKeys(char const* s, size_t e) {
 	ExitState x=success;
@@ -79,11 +80,13 @@ static ExitState executeCommand(uint32_t *cs, size_t z) {
 	for (size_t i=0; i<z && (x=kPressHist(dc, utf8encode(cs[i],dc),0,NULL));++i);
 	return x;
 }
+
 /// Get character for overlay, if the overlay (st) has something to show, else normal char.
 static void getChar(DynamicArray *st, Glyph *glyphChange, int y, int xEnd, int width, int x) {
 	if (x < xEnd - min(min(width,xEnd), size(st))) *glyphChange = term.line[y][x];
 	else if (x<xEnd) glyphChange->u = *((Rune*)(st->content + (size(st)+x-xEnd)*st->elSize));
 }
+
 /// Expand "infix" expression: for instance (w =>)       l     b     |   | v     e    |   | y
 static ExitState expandExpression(char l) { //    ({ =>)       l  ?  {  \n | l | v  /  } \n | h | y
 	int a=state.cmd.infix==infix_a, yank=state.cmd.op=='y', lc=tolower(l), found=1;

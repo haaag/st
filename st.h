@@ -72,12 +72,12 @@ typedef uint_least32_t Rune;
 
 #define Glyph Glyph_
 typedef struct {
-	Rune u;           /* character code */
-	ushort mode;      /* attribute flags */
-	uint32_t fg;      /* foreground  */
-	uint32_t bg;      /* background  */
-	int ustyle;	  /* underline style */
-	int ucolor[3];    /* underline color */
+	Rune u;             /* character code */
+	ushort mode;        /* attribute flags */
+	uint32_t fg;        /* foreground  */
+	uint32_t bg;        /* background  */
+	int ustyle;	        /* underline style */
+	int ucolor[3];      /* underline color */
 } Glyph;
 
 typedef Glyph *Line;

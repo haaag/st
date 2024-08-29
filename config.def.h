@@ -5,14 +5,17 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "Maple Mono NF:pixelsize=17:antialias=true:autohint=true";
+static char *font = "Maple Mono NF:pixelsize=17:style=Regular:antialias=true:autohint=true";
 static char *font2[] = {
-  "nonicons:pixelsize=12:antialias=true:autohint=true",
-  "Material:size=12",
+  "Maple Mono NF:pixelsize=17:style=Italic:antialias=true:autohint=true",
+  "Maple Mono NF:pixelsize=17:style=Bold:antialias=true:autohint=true",
+  "Maple Mono NF:pixelsize=17:style=SemiBold:antialias=true:autohint=true",
   "Noto Color Emoji:pixelsize=13:antialias=true:autohint=true",
   "Symbols Nerd Font:pixelsize=13:antialias=true:autohint=true",
-  "Weather Icons:size=10",
-  "weathericons:size=10"
+  // "nonicons:pixelsize=12:antialias=true:autohint=true",
+  // "Material:size=12",
+  // "Weather Icons:size=10",
+  // "weathericons:size=10"
 };
 
 static int borderpx = 0;
@@ -69,7 +72,7 @@ static uint su_timeout = 200;
  * blinking timeout (set to 0 to disable blinking) for the terminal blinking
  * attribute.
  */
-static unsigned int blinktimeout = 800;
+static unsigned int blinktimeout = 600;
 
 /*
  * interval (in milliseconds) between each successive call to ximspot. This
@@ -156,25 +159,32 @@ static const char *colorname[] = {
  * foreground, background, cursor, reverse cursor
  */
 unsigned int defaultfg = 259;
-unsigned int defaultbg = 258;
+unsigned int defaultbg = 0;
 unsigned int defaultcs = 256;
 unsigned int defaultrcs = 257;
 
-unsigned int const currentBg = 8, buffSize = 2048;
+/// cursorline color
+unsigned int const cursorLineBg = 258; // 0 no-bg
+unsigned int const currentBg = cursorLineBg, buffSize = 2048;
 /// Enable double / triple click yanking / selection of word / line.
 int const mouseYank = 1, mouseSelect = 0;
 /// [Vim Browse] Colors for search results currently on screen.
 unsigned int const highlightBg = 160, highlightFg = 15;
 char const wDelS[] = "!\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~", wDelL[] = " \t";
-char *nmKeys [] = {              ///< Shortcusts executed in normal mode
+/// Shortcusts executed in normal mode
+char *nmKeys [] = {
   "R/Building\nN", "r/Building\n", "X/juli@machine\nN", "x/juli@machine\n",
-  "Q?[Leaving vim, starting execution]\n","F/: error:\nN", "f/: error:\n", "DQf"
+  "Q?[Leaving vim, starting execution]\n", "F/: error:\nN", "f/: error:\n", "DQf"
 };
 unsigned int const amountNmKeys = sizeof(nmKeys) / sizeof(*nmKeys);
 /// Style of the {command, search} string shown in the right corner (y,v,V,/)
 Glyph styleSearch = {' ', ATTR_ITALIC | ATTR_BOLD_FAINT, 7, 16};
-Glyph style[] = {{' ',ATTR_ITALIC|ATTR_FAINT,15,16}, {' ',ATTR_ITALIC,8,11},
-                 {' ', ATTR_ITALIC, 8, 4}, {' ', ATTR_ITALIC, 8, 12}};
+Glyph style[] = {
+    {' ', ATTR_ITALIC|ATTR_FAINT, 15, 16},  // yank
+    {' ', ATTR_ITALIC, 232, 11},            // visual
+    {' ', ATTR_ITALIC, 232, 4},             // visualLine
+    {' ', ATTR_ITALIC, 232, 12}             // no operation
+};
 
 /*
  * https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h4-Functions-using-CSI-_-ordered-by-the-final-character-lparen-s-rparen:CSI-Ps-SP-q.1D81
@@ -271,8 +281,8 @@ MouseKey mkeys[] = {
   { Button5,              Mod4Mask,         zoom,           {.f =  -1} },
 };
 
-static char *openurlcmd[] = { "/bin/sh", "-c", "gourl -o -l 1000 -menu-args='-sb #FFF'", "externalpipe", NULL };
-static char *copyurlcmd[] = { "/bin/sh", "-c", "gourl -c -l 1000 ", "externalpipe", NULL };
+static char *openurlcmd[] = { "/bin/sh", "-c", "gourl -o --email -l 1000 -args='-sb #fe8019'", "externalpipe", NULL };
+static char *copyurlcmd[] = { "/bin/sh", "-c", "gourl -c --email -l 1000 ", "externalpipe", NULL };
 static char *copyoutput[] = { "/bin/sh", "-c", "st-copyout", "externalpipe", NULL };
 
 static Shortcut shortcuts[] = {
@@ -281,9 +291,6 @@ static Shortcut shortcuts[] = {
     { ControlMask,          	    XK_Print,       toggleprinter,  {.i =  0} },
     { ShiftMask,            	    XK_Print,       printscreen,    {.i =  0} },
     { XK_ANY_MOD,           	    XK_Print,       printsel,       {.i =  0} },
-    { MODKEY,               	    XK_equal,       zoom,           {.f = +1} },
-    { MODKEY,               	    XK_minus,       zoom,           {.f = -1} },
-    { MODKEY,               	    XK_BackSpace,   zoomreset,      {.f =  0} },
     { ControlMask | ShiftMask,      XK_C,           clipcopy,       {.i =  0} },
     { ShiftMask,			        XK_Insert,      clippaste,      {.i =  0} },
     { ControlMask | ShiftMask,      XK_V,           clippaste,      {.i =  0} },
@@ -292,14 +299,17 @@ static Shortcut shortcuts[] = {
     { ControlMask | ShiftMask,      XK_U,           iso14755,       {.i =  0} },
     { MODKEY,			            XK_Page_Up,     kscrollup,      {.i = -1} },
     { MODKEY,               	    XK_Page_Down,   kscrolldown,    {.i = -1} },
+    { ControlMask | ShiftMask,	    XK_K,           kscrollup,      {.i = -0.01} },
+    { ControlMask | ShiftMask,      XK_J,           kscrolldown,    {.i = -0.01} },
     { MODKEY,                       XK_Up,          kscrollup,      {.i =  1} },
     { MODKEY,                       XK_Down,        kscrolldown,    {.i =  1} },
     { MODKEY,			            XK_s,           changealpha,	{.f = -0.05} },
     { MODKEY,               	    XK_a,           changealpha,	{.f = +0.05} },
     { TERMMOD,              	    XK_K,           zoom,           {.f = +1} },
     { TERMMOD,              	    XK_J,           zoom,           {.f = -1} },
-    { MODKEY,                       XK_i,           externalpipe,   {.v = copyurlcmd } },
-    { MODKEY | ShiftMask,           XK_I,           externalpipe,   {.v = openurlcmd } },
+    { MODKEY,               	    XK_BackSpace,   zoomreset,      {.f =  0} },
+    { MODKEY,                       XK_i,           externalpipe,   {.v = openurlcmd } },
+    { MODKEY | ShiftMask,           XK_I,           externalpipe,   {.v = copyurlcmd } },
     { MODKEY,                       XK_w,           externalpipe,   {.v = copyoutput } },
     { TERMMOD,              	    XK_Return,      newterm,        {.i =  0} },
     { MODKEY,                       XK_c,           normalMode,     {.i =  0} },
