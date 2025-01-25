@@ -1,10 +1,17 @@
-## st - simple terminal
+<div align="center">
 
-st is a simple terminal emulator for X which sucks less.
+<img src="https://st.suckless.org/st.svg" width="64" height="64" alt="st" />
+
+<b>st</b> - simple terminal
+
+<span><b>st</b> is a simple terminal emulator for X which sucks less.</span>
+
+</div>
+
 
 ## Prerequisites
 
-- void
+- [void](https://voidlinux.org/)
 
 ```sh
 xbps-install libXft-devel libX11-devel harfbuzz-devel libXext-devel libXrender-devel libXinerama-devel
@@ -22,7 +29,7 @@ apt install build-essential libxft-dev libharfbuzz-dev
 pacman -S gd
 ```
 
-Install font-symbola and libXft-bgra
+Install `font-symbola` and `libXft-bgra`
 
 ## Fonts
 
