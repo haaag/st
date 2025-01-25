@@ -12,10 +12,6 @@ static char *font2[] = {
   "Maple Mono NF:pixelsize=17:style=SemiBold:antialias=true:autohint=true",
   "Noto Color Emoji:pixelsize=13:antialias=true:autohint=true",
   "Symbols Nerd Font:pixelsize=13:antialias=true:autohint=true",
-  // "nonicons:pixelsize=12:antialias=true:autohint=true",
-  // "Material:size=12",
-  // "Weather Icons:size=10",
-  // "weathericons:size=10"
 };
 
 static int borderpx = 0;
@@ -281,37 +277,37 @@ MouseKey mkeys[] = {
   { Button5,              Mod4Mask,         zoom,           {.f =  -1} },
 };
 
-static char *openurlcmd[] = { "/bin/sh", "-c", "gourl -o --email -l 1000 -args='-sb #fe8019'", "externalpipe", NULL };
+static char *openurlcmd[] = { "/bin/sh", "-c", "gourl --email -l 1000 -args='-sb #FE8019' -x url-opener", "externalpipe", NULL };
 static char *copyurlcmd[] = { "/bin/sh", "-c", "gourl -c --email -l 1000 ", "externalpipe", NULL };
 static char *copyoutput[] = { "/bin/sh", "-c", "st-copyout", "externalpipe", NULL };
 
 static Shortcut shortcuts[] = {
-    /* mask			                keysym          function        argument */
-    { XK_ANY_MOD,           	    XK_Break,       sendbreak,      {.i =  0} },
-    { ControlMask,          	    XK_Print,       toggleprinter,  {.i =  0} },
-    { ShiftMask,            	    XK_Print,       printscreen,    {.i =  0} },
-    { XK_ANY_MOD,           	    XK_Print,       printsel,       {.i =  0} },
+    /* mask                         keysym          function        argument */
+    { XK_ANY_MOD,                   XK_Break,       sendbreak,      {.i =  0} },
+    { ControlMask,                  XK_Print,       toggleprinter,  {.i =  0} },
+    { ShiftMask,                    XK_Print,       printscreen,    {.i =  0} },
+    { XK_ANY_MOD,                   XK_Print,       printsel,       {.i =  0} },
     { ControlMask | ShiftMask,      XK_C,           clipcopy,       {.i =  0} },
-    { ShiftMask,			        XK_Insert,      clippaste,      {.i =  0} },
+    { ShiftMask,                    XK_Insert,      clippaste,      {.i =  0} },
     { ControlMask | ShiftMask,      XK_V,           clippaste,      {.i =  0} },
-    { XK_ANY_MOD,			        Button2,	    selpaste,	    {.i =  0} },
-    { MODKEY,			            XK_Num_Lock,    numlock,        {.i =  0} },
+    { XK_ANY_MOD,                   Button2,        selpaste,       {.i =  0} },
+    { MODKEY,                       XK_Num_Lock,    numlock,        {.i =  0} },
     { ControlMask | ShiftMask,      XK_U,           iso14755,       {.i =  0} },
-    { MODKEY,			            XK_Page_Up,     kscrollup,      {.i = -1} },
-    { MODKEY,               	    XK_Page_Down,   kscrolldown,    {.i = -1} },
-    { ControlMask | ShiftMask,	    XK_K,           kscrollup,      {.i = -0.01} },
+    { MODKEY,                       XK_Page_Up,     kscrollup,      {.i = -1} },
+    { MODKEY,                       XK_Page_Down,   kscrolldown,    {.i = -1} },
+    { ControlMask | ShiftMask,      XK_K,           kscrollup,      {.i = -0.01} },
     { ControlMask | ShiftMask,      XK_J,           kscrolldown,    {.i = -0.01} },
     { MODKEY,                       XK_Up,          kscrollup,      {.i =  1} },
     { MODKEY,                       XK_Down,        kscrolldown,    {.i =  1} },
-    { MODKEY,			            XK_s,           changealpha,	{.f = -0.05} },
-    { MODKEY,               	    XK_a,           changealpha,	{.f = +0.05} },
-    { TERMMOD,              	    XK_K,           zoom,           {.f = +1} },
-    { TERMMOD,              	    XK_J,           zoom,           {.f = -1} },
-    { MODKEY,               	    XK_BackSpace,   zoomreset,      {.f =  0} },
+    { MODKEY,                       XK_s,           changealpha,    {.f = -0.05} },
+    { MODKEY,                       XK_a,           changealpha,    {.f = +0.05} },
+    { TERMMOD,                      XK_K,           zoom,           {.f = +1} },
+    { TERMMOD,                      XK_J,           zoom,           {.f = -1} },
+    { MODKEY,                       XK_BackSpace,   zoomreset,      {.f =  0} },
     { MODKEY,                       XK_i,           externalpipe,   {.v = openurlcmd } },
     { MODKEY | ShiftMask,           XK_I,           externalpipe,   {.v = copyurlcmd } },
     { MODKEY,                       XK_w,           externalpipe,   {.v = copyoutput } },
-    { TERMMOD,              	    XK_Return,      newterm,        {.i =  0} },
+    { TERMMOD,                      XK_Return,      newterm,        {.i =  0} },
     { MODKEY,                       XK_c,           normalMode,     {.i =  0} },
     //
     // { MODKEY,                       XK_i,           externalpipe,   {.v = openurlcmd } },
